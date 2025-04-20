@@ -1,16 +1,58 @@
 # HotLabel User Profiling Service
 
-This microservice handles user session management, profile creation, and expertise tracking for the HotLabel platform.
+This microservice handles user session management, profile creation, and expertise tracking for the HotLabel platform. It implements a privacy-first approach to user profiling for the crowdsourced data labeling system.
 
 ## Features
 
-- Anonymous user session management
-- User profiling and expertise inference
-- Task compatibility assessment
-- Expert network opt-in management
-- Performance tracking and analytics
+- **Anonymous User Session Management**: Track user activity without storing PII
+- **User Profiling**: Infer expertise, interests, and skills based on user behavior
+- **Expertise Classification**: Categorize users by domain knowledge and skill level
+- **Task Compatibility Engine**: Match users with appropriate labeling tasks
+- **Expert Network**: Allow users to opt-in for enhanced profiles
+- **Performance Analytics**: Track quality metrics and engagement statistics
 
-## Getting Started
+## Architecture
+
+The service follows a clean architecture pattern with clear separation of concerns:
+
+- **API Layer**: REST endpoints for service interaction
+- **Service Layer**: Business logic and core functionality
+- **Repository Layer**: Data access and persistence
+- **Models**: Database schemas and entity definitions
+
+## API Endpoints
+
+### Sessions
+- `POST /api/v1/sessions` - Create a new anonymous session
+- `GET /api/v1/sessions/{session_id}` - Get session details
+- `PATCH /api/v1/sessions/{session_id}` - Update session data
+
+### Profiles
+- `POST /api/v1/profiles` - Create user profile (opt-in to expert network)
+- `GET /api/v1/profiles/{profile_id}` - Get user profile
+- `PUT /api/v1/profiles/{profile_id}` - Update user profile
+- `DELETE /api/v1/profiles/{profile_id}` - Delete user profile
+
+### Task Compatibility
+- `GET /api/v1/users/{session_id}/task-compatibility` - Get task compatibility scores
+- `POST /api/v1/users/{session_id}/task-completions` - Record task completion
+
+### Statistics
+- `GET /api/v1/statistics/users/{user_id}` - Get user performance statistics
+- `GET /api/v1/statistics/publishers/{publisher_id}` - Get publisher statistics
+
+### Expertise Areas
+- `GET /api/v1/expertise` - List all expertise areas
+- `GET /api/v1/expertise/{area_id}` - Get expertise area details
+
+## Data Privacy
+
+- All user data is anonymized by default
+- Personal information is never stored without explicit consent
+- Session data is automatically purged after a configurable period
+- Profile creation is opt-in and requires explicit consent
+
+## Installation and Setup
 
 ### Prerequisites
 
@@ -19,15 +61,32 @@ This microservice handles user session management, profile creation, and experti
 - PostgreSQL
 - Redis
 
-### Running the Service
+### Environment Variables
+
+Copy the `.env.example` file to `.env` and configure:
 
 ```bash
-# Using Docker
-docker-compose up -d
+cp .env.example .env
+# Edit .env with your configuration
+```
 
-# Without Docker
+### Running with Docker
+
+```bash
+docker-compose up -d
+```
+
+### Running Without Docker
+
+```bash
+# Install dependencies
 pip install -r requirements.txt
-uvicorn app.main:app --reload
+
+# Run database migrations
+alembic upgrade head
+
+# Start the server
+uvicorn app.main:app --reload --port 8001
 ```
 
 ## API Documentation
@@ -35,4 +94,33 @@ uvicorn app.main:app --reload
 Once the service is running, you can access the API documentation at:
 
 - Swagger UI: http://localhost:8001/api/v1/docs
-- ReDoc: http://localhost:8001/api/v1/redoc
+- ReDoc: http://localhost:8001/api/v1/docs/redoc
+
+## Integration with Other Services
+
+This service integrates with:
+
+- **Task Management Service**: For task compatibility and assignment
+- **Quality Assurance Service**: For performance metrics and validation
+- **Publisher Service**: For publisher-specific customization
+
+## Development
+
+### Database Migrations
+
+```bash
+# Create a new migration
+alembic revision --autogenerate -m "Description"
+
+# Apply migrations
+alembic upgrade head
+
+# Rollback migration
+alembic downgrade -1
+```
+
+### Running Tests
+
+```bash
+pytest
+```
