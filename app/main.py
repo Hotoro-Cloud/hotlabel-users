@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from fastapi.openapi.utils import get_openapi
 
-from app.api.routes import users, sessions, profiles, statistics
+from app.api.routes import users, sessions, profiles, statistics, expertise
 from app.core.config import settings
 
 # Initialize FastAPI application
@@ -30,6 +30,7 @@ app.include_router(users.router, prefix=settings.API_V1_STR)
 app.include_router(sessions.router, prefix=settings.API_V1_STR)
 app.include_router(profiles.router, prefix=settings.API_V1_STR)
 app.include_router(statistics.router, prefix=settings.API_V1_STR)
+app.include_router(expertise.router, prefix=settings.API_V1_STR)
 
 # Custom docs URL with API prefix
 @app.get(f"{settings.API_V1_STR}/docs", include_in_schema=False)
