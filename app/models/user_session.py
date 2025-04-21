@@ -39,7 +39,7 @@ class UserSession(Base):
     personalization_opt_in = Column(Boolean, default=False)
     
     # Additional data
-    metadata = Column(JSON, default=dict)  # Additional session data
+    session_metadata = Column(JSON, default=dict)  # Additional session data
     
     # Task tracking
     tasks_completed = Column(Integer, default=0)

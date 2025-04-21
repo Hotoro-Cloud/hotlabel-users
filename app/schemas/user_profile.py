@@ -19,7 +19,7 @@ class UserProfileBase(BaseSchema):
     privacy_settings: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Privacy settings")
     
     # Additional data
-    metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Additional profile data")
+    profile_metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Additional profile data")
 
 
 class UserProfileCreate(UserProfileBase):
@@ -39,7 +39,7 @@ class UserProfileUpdate(BaseSchema):
     timezone: Optional[str] = None
     notification_preferences: Optional[Dict[str, Any]] = None
     privacy_settings: Optional[Dict[str, Any]] = None
-    metadata: Optional[Dict[str, Any]] = None
+    profile_metadata: Optional[Dict[str, Any]] = None
     expertise_areas: Optional[List[str]] = None
 
 

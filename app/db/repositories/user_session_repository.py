@@ -13,6 +13,17 @@ class UserSessionRepository(BaseRepository[UserSession, UserSessionCreate, UserS
     
     def __init__(self):
         super().__init__(UserSession)
+
+    def update(self, db: Session, db_obj: UserSession, obj_in) -> UserSession:
+        """Update a session with the given fields."""
+        if not isinstance(obj_in, dict):
+            obj_in = obj_in.model_dump(exclude_unset=True)
+        for key, value in obj_in.items():
+            setattr(db_obj, key, value)
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
     
     def get_by_browser_fingerprint(self, db: Session, browser_fingerprint: str) -> Optional[UserSession]:
         """Get a user session by browser fingerprint."""

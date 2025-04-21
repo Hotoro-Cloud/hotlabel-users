@@ -29,7 +29,7 @@ class UserSessionBase(BaseSchema):
     personalization_opt_in: bool = Field(False, description="Whether personalization consent has been given")
     
     # Additional data
-    metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Additional session data")
+    session_metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Additional session data")
 
 
 class UserSessionCreate(UserSessionBase):
@@ -51,7 +51,7 @@ class UserSessionUpdate(BaseSchema):
     consent_given: Optional[bool] = None
     analytics_opt_in: Optional[bool] = None
     personalization_opt_in: Optional[bool] = None
-    metadata: Optional[Dict[str, Any]] = None
+    session_metadata: Optional[Dict[str, Any]] = None
     tasks_completed: Optional[int] = None
     tasks_attempted: Optional[int] = None
     profile_id: Optional[str] = None

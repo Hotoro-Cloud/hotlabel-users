@@ -124,3 +124,22 @@ alembic downgrade -1
 ```bash
 pytest
 ```
+
+#### Test Coverage
+
+The following test files are included to ensure robust coverage of the application's API and business logic:
+
+- **tests/test_api_integration.py**: End-to-end integration flows for session creation, profile linking, task completion, and expertise area management.
+- **tests/test_profile_routes.py**: CRUD and list tests for user profile API endpoints.
+- **tests/test_statistics_routes.py**: Tests for user and session statistics API endpoints.
+- **tests/test_task_compatibility_service.py**: Unit tests for TaskCompatibilityService methods, using mocks for dependencies.
+- **tests/test_user_routes.py**: Tests for user API endpoints including search, task compatibility, user matching, and language detection.
+- **tests/test_profiler_service.py**: Unit tests for ProfilerService logic, including browser signal analysis, expertise inference, and language proficiency.
+- **tests/test_session_routes.py**: CRUD, update, and task completion tests for session API endpoints.
+
+Test fixtures for user sessions, profiles, and expertise areas are defined in `tests/conftest.py` for consistent and isolated test data.
+
+To run all tests:
+```bash
+pytest
+```

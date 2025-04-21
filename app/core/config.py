@@ -34,17 +34,17 @@ class Settings(BaseSettings):
     DATABASE_URI: Optional[PostgresDsn] = None
     
     @field_validator("DATABASE_URI", mode="before")
-    def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+    def assemble_db_connection(cls, v: Optional[str], info) -> Any:
         if isinstance(v, str):
             return v
-        
+
         return PostgresDsn.build(
             scheme="postgresql",
-            username=values.get("POSTGRES_USER"),
-            password=values.get("POSTGRES_PASSWORD"),
-            host=values.get("POSTGRES_SERVER"),
-            port=values.get("POSTGRES_PORT"),
-            path=f"{values.get('POSTGRES_DB') or ''}",
+            username=info.data.get("POSTGRES_USER"),
+            password=info.data.get("POSTGRES_PASSWORD"),
+            host=info.data.get("POSTGRES_SERVER"),
+            port=int(info.data.get("POSTGRES_PORT")) if info.data.get("POSTGRES_PORT") is not None else None,
+            path=f"{info.data.get('POSTGRES_DB') or ''}",
         )
     
     # Redis

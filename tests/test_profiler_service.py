@@ -14,10 +14,11 @@ from app.models.expertise_area import ExpertiseArea
 @pytest.fixture
 def profiler_service(db):
     """Create a ProfilerService instance with mocked repositories."""
-    session_repo = UserSessionRepository(db)
-    profile_repo = UserProfileRepository(db)
-    expertise_repo = ExpertiseAreaRepository(db)
-    return ProfilerService(session_repo, profile_repo, expertise_repo)
+    session_repo = UserSessionRepository()
+    profile_repo = UserProfileRepository()
+    statistics_repo = None  # Add a placeholder or mock if needed
+    expertise_repo = ExpertiseAreaRepository()
+    return ProfilerService(session_repo, profile_repo, statistics_repo, expertise_repo)
 
 
 def test_analyze_browser_signals(profiler_service, user_session_data):

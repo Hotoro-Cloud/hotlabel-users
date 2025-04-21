@@ -48,7 +48,7 @@ class UserProfile(Base):
     quality_score = Column(Integer, default=0)  # 0-100 score based on task quality
     
     # Additional profile data
-    metadata = Column(JSON, default=dict)
+    profile_metadata = Column(JSON, default=dict)
     
     # Relationships
     sessions = relationship("UserSession", back_populates="profile")

@@ -34,7 +34,10 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
         """Create a new record."""
         obj_in_data = jsonable_encoder(obj_in)
-        db_obj = self.model(**obj_in_data)
+        # Only include keys that are attributes of the model
+        model_columns = set(c.name for c in self.model.__table__.columns)
+        filtered_data = {k: v for k, v in obj_in_data.items() if k in model_columns}
+        db_obj = self.model(**filtered_data)
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)

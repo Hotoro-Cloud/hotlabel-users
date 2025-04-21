@@ -48,9 +48,9 @@ def create_profile(
         )
     
     # Prepare profile data
-    profile_dict = profile_data.model_dump(exclude={"email", "session_id"})
+    profile_dict = profile_data.model_dump()
     profile_dict["email_hash"] = email_hash
-    
+
     # Create profile
     profile = profile_repository.create(db, obj_in=UserProfileCreate(**profile_dict))
     

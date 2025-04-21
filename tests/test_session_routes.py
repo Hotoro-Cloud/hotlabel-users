@@ -91,7 +91,7 @@ def test_record_task_completion(client, db, user_session_data):
     
     # Record task completion
     response = client.post(
-        f"{settings.API_V1_STR}/sessions/{session.id}/tasks",
+        f"{settings.API_V1_STR}/sessions/{session.id}/task-completed",
         json=task_data
     )
     

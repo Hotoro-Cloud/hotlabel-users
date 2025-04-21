@@ -6,12 +6,14 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.db.session import Base
+import app.api.routes.profiles
+import app.api.routes.expertise
 from app.main import app
 from app.db.session import get_db
 from app.core.config import settings
 
 # Test database URL
-TEST_DATABASE_URL = "sqlite:///./test.db"
+TEST_DATABASE_URL = "sqlite:///:memory:"
 
 # Create the test engine
 engine = create_engine(
@@ -94,7 +96,7 @@ def user_profile_data():
         "timezone": "America/New_York",
         "notification_preferences": {"email": True, "push": False},
         "privacy_settings": {"share_expertise": True, "public_profile": False},
-        "metadata": {"interests": ["technology", "science"]}
+        "profile_metadata": {"interests": ["technology", "science"]}
     }
 
 

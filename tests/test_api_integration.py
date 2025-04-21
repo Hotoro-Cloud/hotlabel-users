@@ -89,7 +89,7 @@ def test_task_completion_flow(client, user_session_data):
         "successful": True
     }
     response = client.post(
-        f"{settings.API_V1_STR}/sessions/{session_id}/tasks",
+        f"{settings.API_V1_STR}/sessions/{session_id}/task-completed",
         json=task_data
     )
     assert response.status_code == status.HTTP_200_OK
@@ -104,7 +104,7 @@ def test_task_completion_flow(client, user_session_data):
         "successful": True
     }
     response = client.post(
-        f"{settings.API_V1_STR}/sessions/{session_id}/tasks",
+        f"{settings.API_V1_STR}/sessions/{session_id}/task-completed",
         json=task_data
     )
     assert response.status_code == status.HTTP_200_OK
@@ -129,7 +129,7 @@ def test_expertise_areas_flow(client):
         "is_active": True
     }
     response = client.post(
-        f"{settings.API_V1_STR}/expertise/",
+        f"{settings.API_V1_STR}/expertise-areas/",
         json=area_data
     )
     assert response.status_code == status.HTTP_201_CREATED
@@ -137,7 +137,7 @@ def test_expertise_areas_flow(client):
     area_id = area["id"]
     
     # Step 2: Get the expertise area
-    response = client.get(f"{settings.API_V1_STR}/expertise/{area_id}")
+    response = client.get(f"{settings.API_V1_STR}/expertise-areas/{area_id}")
     assert response.status_code == status.HTTP_200_OK
     retrieved_area = response.json()
     assert retrieved_area["id"] == area_id
@@ -152,7 +152,7 @@ def test_expertise_areas_flow(client):
         "is_active": True
     }
     response = client.post(
-        f"{settings.API_V1_STR}/expertise/",
+        f"{settings.API_V1_STR}/expertise-areas/",
         json=child_area_data
     )
     assert response.status_code == status.HTTP_201_CREATED
@@ -160,7 +160,7 @@ def test_expertise_areas_flow(client):
     child_area_id = child_area["id"]
     
     # Step 4: Get expertise area tree
-    response = client.get(f"{settings.API_V1_STR}/expertise/tree")
+    response = client.get(f"{settings.API_V1_STR}/expertise-areas/tree")
     assert response.status_code == status.HTTP_200_OK
     tree = response.json()
     assert "areas" in tree
