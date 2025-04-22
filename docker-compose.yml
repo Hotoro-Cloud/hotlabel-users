@@ -8,10 +8,13 @@ services:
     volumes:
       - ./app:/app/app
     environment:
-      - POSTGRES_SERVER=db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=hotlabel_users
+      # Use DATABASE_URL for DB connection (preferred)
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/hotlabel_users
+      # Deprecated: POSTGRES_* variables are no longer used by the app, but kept for backward compatibility
+      # - POSTGRES_SERVER=db
+      # - POSTGRES_USER=postgres
+      # - POSTGRES_PASSWORD=postgres
+      # - POSTGRES_DB=hotlabel_users
       - REDIS_HOST=redis
     depends_on:
       - db

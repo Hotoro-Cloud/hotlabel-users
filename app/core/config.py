@@ -25,19 +25,27 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
     
-    # PostgreSQL
-    POSTGRES_SERVER: str
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
+    # Database (Primary: DATABASE_URL, fallback: POSTGRES_* for backward compatibility)
+    DATABASE_URL: Optional[str] = os.getenv(
+        "DATABASE_URL",
+        "postgresql://postgres:postgres@localhost:5432/hotlabel_users"
+    )
+
+    # Deprecated: Use DATABASE_URL instead. These are kept for backward compatibility.
+    POSTGRES_SERVER: Optional[str] = None
+    POSTGRES_USER: Optional[str] = None
+    POSTGRES_PASSWORD: Optional[str] = None
+    POSTGRES_DB: Optional[str] = None
     POSTGRES_PORT: str = "5432"
     DATABASE_URI: Optional[PostgresDsn] = None
-    
+
     @field_validator("DATABASE_URI", mode="before")
     def assemble_db_connection(cls, v: Optional[str], info) -> Any:
-        if isinstance(v, str):
-            return v
-
+        # If DATABASE_URL is set, use it
+        db_url = info.data.get("DATABASE_URL")
+        if db_url:
+            return db_url
+        # Otherwise, assemble from POSTGRES_* (deprecated)
         return PostgresDsn.build(
             scheme="postgresql",
             username=info.data.get("POSTGRES_USER"),
