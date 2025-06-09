@@ -1,12 +1,28 @@
 from typing import Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from pydantic import BaseModel, EmailStr
 
 from app.db.session import get_db
 from app.db.repositories.user_session_repository import UserSessionRepository
 from app.db.repositories.user_profile_repository import UserProfileRepository
 from app.db.repositories.expertise_area_repository import ExpertiseAreaRepository
 from app.core.exceptions import ResourceNotFound
+
+# Request and response models
+class UserCreate(BaseModel):
+    email: EmailStr
+    full_name: str
+    is_active: bool = True
+    is_superuser: bool = False
+    password: str
+
+class UserResponse(BaseModel):
+    id: str
+    email: EmailStr
+    full_name: str
+    is_active: bool
+    is_superuser: bool
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -15,6 +31,30 @@ session_repository = UserSessionRepository()
 profile_repository = UserProfileRepository()
 expertise_repository = ExpertiseAreaRepository()
 
+@router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def create_user(
+    user: UserCreate,
+    db: Session = Depends(get_db)
+):
+    """Create a new user."""
+    # Check if user with email already exists
+    existing_user = profile_repository.get_by_email(db, user.email)
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
+    
+    # Create new user profile
+    user_data = user.dict()
+    user_data.pop("password")  # Remove password from dict before creating profile
+    new_user = profile_repository.create(db, obj_in=user_data)
+    
+    # In a real implementation, you would hash the password and store it securely
+    # For this demo, we'll just store it as is (NOT recommended for production)
+    new_user.password = user.password
+    
+    return new_user
 
 @router.get("/search")
 def search_users(
