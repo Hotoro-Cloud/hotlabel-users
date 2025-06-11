@@ -11,7 +11,7 @@ class UserSession(Base):
     
     __tablename__ = "user_sessions"
     
-    id = Column(String, primary_key=True, index=True, default=lambda: f"sess_{uuid.uuid4().hex[:8]}")
+    id = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
     
     # Publisher relationship
     publisher_id = Column(String, index=True, nullable=False)
