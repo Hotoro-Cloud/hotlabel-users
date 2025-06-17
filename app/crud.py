@@ -1,0 +1,1 @@
+# Minimal CRUD module for users service 
