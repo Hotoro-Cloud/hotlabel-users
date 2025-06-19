@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     
     # Security
-    SECRET_KEY: str
+    SECRET_KEY: Optional[str]
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
@@ -29,42 +29,15 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
     
-    # Database (Primary: DATABASE_URL, fallback: POSTGRES_* for backward compatibility)
     DATABASE_URL: Optional[str] = os.getenv(
         "DATABASE_URL",
         "postgresql://postgres:postgres@localhost:5432/hotlabel_users"
     )
-
-    # Deprecated: Use DATABASE_URL instead. These are kept for backward compatibility.
-    POSTGRES_SERVER: Optional[str] = None
-    POSTGRES_USER: Optional[str] = None
-    POSTGRES_PASSWORD: Optional[str] = None
-    POSTGRES_DB: Optional[str] = None
-    POSTGRES_PORT: str = "5432"
-    DATABASE_URI: Optional[PostgresDsn] = None
-
-    @field_validator("DATABASE_URI", mode="before")
-    def assemble_db_connection(cls, v: Optional[str], info) -> Any:
-        # If DATABASE_URL is set, use it
-        db_url = info.data.get("DATABASE_URL")
-        if db_url:
-            return db_url
-        # Otherwise, assemble from POSTGRES_* (deprecated)
-        return PostgresDsn.build(
-            scheme="postgresql",
-            username=info.data.get("POSTGRES_USER"),
-            password=info.data.get("POSTGRES_PASSWORD"),
-            host=info.data.get("POSTGRES_SERVER"),
-            port=int(info.data.get("POSTGRES_PORT")) if info.data.get("POSTGRES_PORT") is not None else None,
-            path=f"{info.data.get('POSTGRES_DB') or ''}",
-        )
     
     # Redis
-    REDIS_HOST: str
-    REDIS_PORT: str = "6379"
-    REDIS_DB: int = 0
-    REDIS_PASSWORD: Optional[str] = None
-    
+    REDIS_URL: Optional[str] = os.getenv("REDIS_URL", "redis://redis:6379/0")
+    REDIS_HOST: Optional[str]
+
     # Service URLs
     TASKS_SERVICE_URL: AnyHttpUrl
     QA_SERVICE_URL: AnyHttpUrl
@@ -84,6 +57,7 @@ class Settings(BaseSettings):
     class Config:
         case_sensitive = True
         env_file = ".env"
+        extra = "ignore"  # Allow extra fields from environment
 
 
 settings = Settings()
